@@ -9,6 +9,7 @@ local locations = {
 local player = game.Players.LocalPlayer
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
 local TeleportService = game:GetService("TeleportService")
+local targetPlaceId = 17503543197 -- Đưa ID Place ra ngoài cho dễ quản lý
 
 local function startSequence()
     local character = player.Character or player.CharacterAdded:Wait()
@@ -38,7 +39,11 @@ local function startSequence()
     -- Đợi 4 giây rồi chuyển sang place chỉ định
     print("Đang đợi 4 giây để chuyển place...")
     task.wait(4)
-    TeleportService:Teleport(17503543197, player)  -- Đã đổi place ID ở đây
+    
+    -- SỬA LẠI PHẦN ĐỂ DÙNG LỆNH CHUẨN MỚI NHẤT
+    pcall(function()
+        TeleportService:TeleportAsync(targetPlaceId, {player})
+    end)
 end
 
 -- Chạy script

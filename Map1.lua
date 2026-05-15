@@ -36,7 +36,7 @@ local function startSequence()
     
     -- Đợi 4 giây trước khi thực hiện chuỗi lệnh đổi thế giới
     print("Đang đợi 4 giây để chuyển sang World 2...")
-    task.wait(4)
+    task.wait(3)
     
     -- BƯỚC XÁC NHẬN: Gửi lệnh Index để máy chủ phê duyệt trạng thái hợp lệ
     pcall(function()

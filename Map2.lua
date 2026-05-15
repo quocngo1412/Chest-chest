@@ -8,8 +8,6 @@ local locations = {
 
 local player = game.Players.LocalPlayer
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
-local TeleportService = game:GetService("TeleportService")
-local targetPlaceId = 17503543197 -- Đưa ID Place ra ngoài cho dễ quản lý
 
 local function startSequence()
     local character = player.Character or player.CharacterAdded:Wait()
@@ -36,13 +34,21 @@ local function startSequence()
     
     print("Hoàn thành chuỗi dịch chuyển và thả TNT!")
     
-    -- Đợi 4 giây rồi chuyển sang place chỉ định
-    print("Đang đợi 4 giây để chuyển place...")
-    task.wait(4)
+    -- Đợi 4 giây trước khi thực hiện chuỗi lệnh đổi thế giới
+    print("Đang đợi 4 giây để chuyển sang World 3...")
+    task.wait(3)
     
-    -- SỬA LẠI PHẦN ĐỂ DÙNG LỆNH CHUẨN MỚI NHẤT
+    -- BƯỚC XÁC NHẬN: Gửi lệnh Index để máy chủ phê duyệt trạng thái hợp lệ
     pcall(function()
-        TeleportService:TeleportAsync(targetPlaceId, {player})
+        Network:WaitForChild("Index: Request Hatch Count"):InvokeServer()
+    end)
+    
+    -- Chờ 1 giây ngắn theo đúng chuỗi tuần tự hệ thống
+    task.wait(1)
+    
+    -- BƯỚC TELEPORT: Gọi chính xác mục con World3Teleport
+    pcall(function()
+        Network:WaitForChild("World3Teleport"):InvokeServer()
     end)
 end
 

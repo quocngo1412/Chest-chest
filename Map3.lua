@@ -8,7 +8,6 @@ local locations = {
 
 local player = game.Players.LocalPlayer
 local Network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
-local TeleportService = game:GetService("TeleportService")
 
 local function startSequence()
     local character = player.Character or player.CharacterAdded:Wait()
@@ -20,7 +19,7 @@ local function startSequence()
         rootPart.Velocity = Vector3.new(0, 0, 0)
         print("Đã đến tọa độ " .. i)
 
-        -- 2. Chờ 2 giây đầu tiên (Đã chỉnh từ 1.5 -> 2)
+        -- 2. Chờ 2 giây đầu tiên
         task.wait(2)
 
         -- 3. Thực hiện thả TNT
@@ -29,16 +28,28 @@ local function startSequence()
         end)
         print("--> Thả TNT tại điểm " .. i)
 
-        -- 4. Chờ nốt 2 giây còn lại (Đã chỉnh từ 1.5 -> 2)
+        -- 4. Chờ nốt 2 giây còn lại
         task.wait(2)
     end
     
     print("Hoàn thành chuỗi dịch chuyển và thả TNT!")
     
-    -- Đợi 4 giây rồi chuyển đến place chỉ định
-    print("Đang đợi 4 giây để chuyển place...")
-    task.wait(4)
-    TeleportService:Teleport(8737899170, player)  -- Đã sửa place ID
+    -- Đợi 4 giây trước khi thực hiện chuỗi lệnh đổi thế giới
+    print("Đang đợi 4 giây để chuyển sang World 1...")
+    task.wait(3)
+    
+    -- BƯỚC XÁC NHẬN: Gửi lệnh Index để máy chủ phê duyệt trạng thái hợp lệ
+    pcall(function()
+        Network:WaitForChild("Index: Request Hatch Count"):InvokeServer()
+    end)
+    
+    -- Chờ 1 giây ngắn theo đúng chuỗi tuần tự hệ thống
+    task.wait(1)
+    
+    -- BƯỚC TELEPORT: Gọi chính xác mục con World1Teleport
+    pcall(function()
+        Network:WaitForChild("World1Teleport"):InvokeServer()
+    end)
 end
 
 -- Chạy script
